@@ -1,0 +1,29 @@
+Concrete inputs: x=3, x=0, x=1  
+
+SMT for x=3: (set-logic QF_AUFBV )... (assert (= (select x 31) (_ bv0 1)))... (assert (= false (= N0 (_ bv0 32)))) (assert (= N0 (_ bv3 32)))) (check-sat)(exit)  
+
+SMT for x=0, x=1: (set-logic QF_AUFBV )... (assert (= (select x 31) (_ bv0 1)))... (assert (= false (= N0 (_ bv0 32)))) (assert (= false (= N0 (_ bv3 32))))) (check-sat)(exit)  
+
+KQuery constraints: 
+
+For x=3: array x[4] : w32 -> w8 = symbolic (query [(Eq false (= 0)) (Eq 0 N0)] false) 
+
+For x=0, x=1: array x[4] : w32 -> w8 = symbolic (query [(Eq false (= 0)) (Eq false (Eq 0 N0))] false) 
+
+ 
+
+Concrete inputs: x=-1, x=0, x=1 
+
+SMT for x=-1: (set-logic QF_AUFBV ) (declare-fun x() (Array(_ BitVec 32)(_ BitVec 8))) (assert (= false(= false(bvslt(_ bv0 32)(concat(select x(_ bv3 32))(...))))))) (check-sat)(exit) 
+
+SMT for x=0: (set-logic QF_AUFBV ) (declare-fun x() (Array(_ BitVec 32)(_ BitVec 8))) (assert (= false(bvslt(_ bv0 32)(concat(select x(_ bv3 32))(...))))) (check-sat)(exit) 
+
+SMT for x=1: (set-logic QF_AUFBV ) (declare-fun x() (Array(_ BitVec 32)(_ BitVec 8))) (assert (bvslt(_ bv0 32)(concat(select x(_ bv3 32))(...)))) (check-sat)(exit) 
+
+KQuery constraints: 
+
+For x=-1: array x[4] : w32 -> w8 = symbolic (query [(Eq false(Eq false(Slt 0(ReadLSB w32 0 x))))] false) 
+
+For x=0: array x[4] : w32 -> w8 = symbolic (query [(Eq false(Slt 0(ReadLSB w32 0 x)))] false) 
+
+For x=1: array x[4] : w32 -> w8 = symbolic (query [(Slt 0(ReadLSB w32 0 x))] false) 
